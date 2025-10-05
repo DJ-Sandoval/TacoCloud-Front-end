@@ -166,6 +166,21 @@
   color: #f4c430;
 }
 
+.sidebar-menu-link.active {
+  background-color: rgba(244, 196, 48, 0.3) !important;
+  color: #f4c430 !important;
+  border-left: 4px solid #f4c430;
+}
+
+.active-indicator {
+  width: 4px;
+  height: 100%;
+  background-color: #f4c430;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 /* User Section */
 .sidebar-user-section {
   padding: 1rem 1.5rem;

@@ -1,6 +1,8 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import LoginPage from './components/LoginPage'
 import Dashboard from './components/Dashboard'
+import Clientes from './components/Clientes'
 import './App.css'
 
 function App() {
@@ -16,7 +18,28 @@ function App() {
     )
   }
 
-  return isAuthenticated ? <Dashboard /> : <LoginPage />
+  return (
+    <Router>
+      <Routes>
+        <Route 
+          path="/login" 
+          element={!isAuthenticated ? <LoginPage /> : <Navigate to="/dashboard" />} 
+        />
+        <Route 
+          path="/dashboard" 
+          element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/clientes" 
+          element={isAuthenticated ? <Clientes /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/" 
+          element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
+        />
+      </Routes>
+    </Router>
+  )
 }
 
 export default App

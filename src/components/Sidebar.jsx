@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import '../styles/Sidebar.css'; // Crearemos este archivo CSS
+import { useNavigate, useLocation } from 'react-router-dom';
+import '../styles/Sidebar.css';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, logout, negocioId } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -12,27 +15,39 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   const handleLogout = () => {
     logout();
+    navigate('/login');
+    if (isOpen) {
+      toggleSidebar();
+    }
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
     if (isOpen) {
       toggleSidebar();
     }
   };
 
   const menuItems = [
-    { name: 'Cajas', icon: 'fas fa-box' },
-    { name: 'Clientes', icon: 'fas fa-users' },
-    { name: 'Categorías', icon: 'fas fa-tags' },
-    { name: 'Productos', icon: 'fas fa-box-open' },
-    { name: 'Compras', icon: 'fas fa-shopping-cart' },
-    { name: 'Pedidos', icon: 'fas fa-receipt' },
-    { name: 'Gastos', icon: 'fas fa-money-bill-wave' },
-    { name: 'Nueva Venta', icon: 'fas fa-cart-plus' },
-    { name: 'Historial Pedidos', icon: 'fas fa-history' },
-    { name: 'Historial Ventas', icon: 'fas fa-chart-line' },
-    { name: 'Negocio', icon: 'fas fa-store' },
-    { name: 'Inventario', icon: 'fas fa-warehouse' },
-    { name: 'Reportes', icon: 'fas fa-file-alt' },
-    { name: 'Configuraciones', icon: 'fas fa-cog' },
+    { name: 'Cajas', icon: 'fas fa-box', path: '/cajas' },
+    { name: 'Clientes', icon: 'fas fa-users', path: '/clientes' },
+    { name: 'Categorías', icon: 'fas fa-tags', path: '/categorias' },
+    { name: 'Productos', icon: 'fas fa-box-open', path: '/productos' },
+    { name: 'Compras', icon: 'fas fa-shopping-cart', path: '/compras' },
+    { name: 'Pedidos', icon: 'fas fa-receipt', path: '/pedidos' },
+    { name: 'Gastos', icon: 'fas fa-money-bill-wave', path: '/gastos' },
+    { name: 'Nueva Venta', icon: 'fas fa-cart-plus', path: '/nueva-venta' },
+    { name: 'Historial Pedidos', icon: 'fas fa-history', path: '/historial-pedidos' },
+    { name: 'Historial Ventas', icon: 'fas fa-chart-line', path: '/historial-ventas' },
+    { name: 'Negocio', icon: 'fas fa-store', path: '/negocio' },
+    { name: 'Inventario', icon: 'fas fa-warehouse', path: '/inventario' },
+    { name: 'Reportes', icon: 'fas fa-file-alt', path: '/reportes' },
+    { name: 'Configuraciones', icon: 'fas fa-cog', path: '/configuraciones' },
   ];
+
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
 
   return (
     <>
@@ -78,16 +93,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             {menuItems.map((item, index) => (
               <li key={index} className="sidebar-menu-item">
                 <button
-                  className="sidebar-menu-link"
-                  onClick={() => {
-                    console.log(`Navegar a: ${item.name}`);
-                    if (isOpen) {
-                      toggleSidebar();
-                    }
-                  }}
+                  className={`sidebar-menu-link ${isActive(item.path) ? 'active' : ''}`}
+                  onClick={() => handleNavigation(item.path)}
                 >
                   <i className={item.icon}></i>
                   <span>{item.name}</span>
+                  {isActive(item.path) && <div className="active-indicator"></div>}
                 </button>
               </li>
             ))}
@@ -117,12 +128,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               <div className="user-dropdown-menu">
                 <button
                   className="dropdown-item"
-                  onClick={() => {
-                    console.log('Ir a configuración');
-                    if (isOpen) {
-                      toggleSidebar();
-                    }
-                  }}
+                  onClick={() => handleNavigation('/configuracion')}
                 >
                   <i className="fas fa-cog me-2"></i>
                   Configuración
