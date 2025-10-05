@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import '../styles/Sidebar.css'; // Crearemos este archivo CSS
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -17,140 +18,128 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   };
 
   const menuItems = [
-    'Cajas',
-    'Clientes',
-    'Categorías',
-    'Productos',
-    'Compras',
-    'Pedidos',
-    'Gastos',
-    'Nueva Venta',
-    'Historial Pedidos',
-    'Historial Ventas',
-    'Negocio',
-    'Inventario',
-    'Reportes',
-    'Configuraciones',
+    { name: 'Cajas', icon: 'fas fa-box' },
+    { name: 'Clientes', icon: 'fas fa-users' },
+    { name: 'Categorías', icon: 'fas fa-tags' },
+    { name: 'Productos', icon: 'fas fa-box-open' },
+    { name: 'Compras', icon: 'fas fa-shopping-cart' },
+    { name: 'Pedidos', icon: 'fas fa-receipt' },
+    { name: 'Gastos', icon: 'fas fa-money-bill-wave' },
+    { name: 'Nueva Venta', icon: 'fas fa-cart-plus' },
+    { name: 'Historial Pedidos', icon: 'fas fa-history' },
+    { name: 'Historial Ventas', icon: 'fas fa-chart-line' },
+    { name: 'Negocio', icon: 'fas fa-store' },
+    { name: 'Inventario', icon: 'fas fa-warehouse' },
+    { name: 'Reportes', icon: 'fas fa-file-alt' },
+    { name: 'Configuraciones', icon: 'fas fa-cog' },
   ];
 
   return (
-    <div
-      className={`fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      } md:translate-x-0 transition-transform duration-300 ease-in-out z-50`}
-    >
-      <div className="flex items-center justify-between p-4 border-b">
-        <h2 className="text-xl font-semibold">TacoCloud</h2>
-        <button
-          className="md:hidden"
+    <>
+      {/* Overlay para móvil */}
+      {isOpen && (
+        <div 
+          className="sidebar-overlay"
           onClick={toggleSidebar}
-          aria-label="Close sidebar"
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
+        />
+      )}
       
-      {/* Información del negocio */}
-      <div className="p-4 bg-gray-100 border-b">
-        <p className="text-sm text-gray-600">Negocio ID: {negocioId}</p>
-      </div>
-
-      <nav className="p-4">
-        <ul className="space-y-2">
-          {menuItems.map((item, index) => (
-            <li key={index}>
-              <button
-                className="w-full text-left p-2 rounded hover:bg-gray-200 transition-colors duration-200"
-                onClick={() => {
-                  // Aquí puedes agregar la lógica para navegar a cada sección
-                  console.log(`Navegar a: ${item}`);
-                  if (isOpen) {
-                    toggleSidebar();
-                  }
-                }}
-              >
-                {item}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      
-      <div className="absolute bottom-0 w-full p-4 border-t">
-        <div className="relative">
+      <div
+        className={`sidebar ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`}
+      >
+        {/* Brand Section */}
+        <div className="sidebar-brand">
+          <i className="fas fa-cloud-meatball"></i>
+          <span>TacoCloud</span>
           <button
-            onClick={toggleDropdown}
-            className="w-full text-left p-2 rounded hover:bg-gray-200 flex items-center justify-between transition-colors duration-200"
+            className="sidebar-close-btn d-md-none"
+            onClick={toggleSidebar}
+            aria-label="Close sidebar"
           >
-            <span className="flex items-center">
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5.121 17.804A4 4 0 018 16h8a4 4 0 012.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              {user?.username}
-            </span>
-            <svg
-              className={`w-4 h-4 transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            <i className="fas fa-times"></i>
           </button>
-          {isDropdownOpen && (
-            <div className="mt-2 bg-white shadow-lg rounded border">
-              <button
-                className="block w-full text-left p-2 hover:bg-gray-200 transition-colors duration-200"
-                onClick={() => {
-                  // Navegar a configuración
-                  if (isOpen) {
-                    toggleSidebar();
-                  }
-                }}
-              >
-                Configuración
-              </button>
-              <button
-                className="block w-full text-left p-2 hover:bg-gray-200 text-red-600 transition-colors duration-200"
-                onClick={handleLogout}
-              >
-                Cerrar Sesión
-              </button>
-            </div>
-          )}
+        </div>
+
+        {/* Negocio Info */}
+        <div className="negocio-info">
+          <div className="negocio-id">
+            <i className="fas fa-store me-2"></i>
+            Negocio ID: {negocioId}
+          </div>
+          <div className="user-welcome">
+            <i className="fas fa-user me-2"></i>
+            Hola, {user?.username}
+          </div>
+        </div>
+
+        {/* Navigation Menu */}
+        <nav className="sidebar-nav">
+          <ul className="sidebar-menu">
+            {menuItems.map((item, index) => (
+              <li key={index} className="sidebar-menu-item">
+                <button
+                  className="sidebar-menu-link"
+                  onClick={() => {
+                    console.log(`Navegar a: ${item.name}`);
+                    if (isOpen) {
+                      toggleSidebar();
+                    }
+                  }}
+                >
+                  <i className={item.icon}></i>
+                  <span>{item.name}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* User Section */}
+        <div className="sidebar-user-section">
+          <div className="user-dropdown">
+            <button
+              onClick={toggleDropdown}
+              className="user-dropdown-btn"
+            >
+              <div className="user-avatar">
+                <i className="fas fa-user-circle"></i>
+              </div>
+              <div className="user-info">
+                <div className="user-name">{user?.username}</div>
+                <div className="user-role">Administrador</div>
+              </div>
+              <i className={`dropdown-arrow ${isDropdownOpen ? 'rotated' : ''}`}>
+                <i className="fas fa-chevron-down"></i>
+              </i>
+            </button>
+            
+            {isDropdownOpen && (
+              <div className="user-dropdown-menu">
+                <button
+                  className="dropdown-item"
+                  onClick={() => {
+                    console.log('Ir a configuración');
+                    if (isOpen) {
+                      toggleSidebar();
+                    }
+                  }}
+                >
+                  <i className="fas fa-cog me-2"></i>
+                  Configuración
+                </button>
+                <button
+                  className="dropdown-item logout-item"
+                  onClick={handleLogout}
+                >
+                  <i className="fas fa-sign-out-alt me-2"></i>
+                  Cerrar Sesión
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

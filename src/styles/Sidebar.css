@@ -1,0 +1,297 @@
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px;
+  background: linear-gradient(180deg, #1a3c34 0%, #2d5c4f 100%);
+  color: white;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #f4c430 #1a3c34;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #1a3c34;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #f4c430;
+  border-radius: 3px;
+}
+
+.sidebar-closed {
+  transform: translateX(-100%);
+}
+
+.sidebar-open {
+  transform: translateX(0);
+}
+
+/* Overlay para móvil */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    transform: translateX(0) !important;
+  }
+  
+  .sidebar-overlay {
+    display: none;
+  }
+}
+
+/* Brand Section */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 2px solid #f4c430;
+  margin-bottom: 1rem;
+}
+
+.sidebar-brand i {
+  font-size: 2rem;
+  color: #f4c430;
+  margin-right: 0.75rem;
+}
+
+.sidebar-brand span {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  flex-grow: 1;
+}
+
+.sidebar-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Negocio Info */
+.negocio-info {
+  padding: 0 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 1rem;
+}
+
+.negocio-id {
+  font-size: 0.85rem;
+  color: #f4c430;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.user-welcome {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+}
+
+/* Navigation Menu */
+.sidebar-nav {
+  flex: 1;
+  padding: 0 0.75rem;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu-item {
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-menu-link {
+  width: 100%;
+  background: none;
+  border: none;
+  color: white;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.sidebar-menu-link:hover {
+  background-color: rgba(244, 196, 48, 0.2);
+  color: #f4c430;
+  transform: translateX(5px);
+}
+
+.sidebar-menu-link i {
+  width: 20px;
+  margin-right: 0.75rem;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.sidebar-menu-link:hover i {
+  color: #f4c430;
+}
+
+/* User Section */
+.sidebar-user-section {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(26, 60, 52, 0.8);
+}
+
+.user-dropdown {
+  position: relative;
+}
+
+.user-dropdown-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-dropdown-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar {
+  font-size: 2rem;
+  color: #f4c430;
+}
+
+.user-info {
+  flex: 1;
+  text-align: left;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.user-role {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dropdown-arrow {
+  transition: transform 0.3s ease;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dropdown-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.user-dropdown-menu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+.dropdown-item {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: #333;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #1a3c34;
+}
+
+.dropdown-item i {
+  width: 16px;
+  color: #666;
+}
+
+.logout-item {
+  color: #dc3545;
+  border-top: 1px solid #eee;
+}
+
+.logout-item:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.logout-item:hover i {
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .sidebar {
+    width: 260px;
+  }
+  
+  .sidebar-brand {
+    padding: 1.25rem 1.25rem 0.75rem;
+  }
+  
+  .negocio-info {
+    padding: 0 1.25rem 0.75rem;
+  }
+  
+  .sidebar-user-section {
+    padding: 0.75rem 1.25rem;
+  }
+}
