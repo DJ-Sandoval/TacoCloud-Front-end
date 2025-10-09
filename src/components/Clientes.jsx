@@ -3,13 +3,16 @@ import { useAuth } from '../context/AuthContext'
 import { useApi } from '../hooks/useApi'
 import Sidebar from './Sidebar'
 import ClienteModal from '../modal/ClienteModal'
+import ClienteViewModal from '../modal/ClienteViewModal'
+import ClienteEditModal from '../modal/ClienteEditModal'
 import '../styles/Clientes.css'
 
 const Clientes = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [clientes, setClientes] = useState([])
   const [loading, setLoading] = useState(true)
-  const [showModal, setShowModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const [selectedCliente, setSelectedCliente] = useState(null)
   const { user, negocioId } = useAuth()
   const { fetchFromNegocio } = useApi()
@@ -18,22 +21,29 @@ const Clientes = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
-  const fetchClientes = async () => {
-    try {
-      setLoading(true)
-      const response = await fetchFromNegocio('clientes')
-      if (response.ok) {
-        const data = await response.json()
-        setClientes(data.content || [])
-      } else {
-        console.error('Error al cargar clientes')
+ const fetchClientes = async () => {
+  try {
+    setLoading(true)
+    const response = await fetch(`http://localhost:8085/api/clientes/negocio/${negocioId}?page=0&size=100`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
-    } catch (error) {
-      console.error('Error:', error)
-    } finally {
-      setLoading(false)
+    })
+    
+    if (response.ok) {
+      const data = await response.json()
+      setClientes(data.content || [])
+    } else {
+      console.error('Error al cargar clientes')
+      alert('Error al cargar la lista de clientes')
     }
+  } catch (error) {
+    console.error('Error:', error)
+    alert('Error de conexión al cargar clientes')
+  } finally {
+    setLoading(false)
   }
+}
 
   useEffect(() => {
     fetchClientes()
@@ -41,41 +51,43 @@ const Clientes = () => {
 
   const handleNuevoCliente = () => {
     setSelectedCliente(null)
-    setShowModal(true)
+    setShowEditModal(true)
   }
 
   const handleVerCliente = (cliente) => {
     setSelectedCliente(cliente)
-    setShowModal(true)
+    setShowViewModal(true)
   }
 
   const handleEditarCliente = (cliente) => {
     setSelectedCliente(cliente)
-    setShowModal(true)
+    setShowEditModal(true)
   }
 
   const handleEliminarCliente = async (cliente) => {
-    if (window.confirm(`¿Estás seguro de eliminar al cliente ${cliente.nombre}?`)) {
-      try {
-        const response = await fetch(`http://localhost:8085/api/clientes/${cliente.id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        })
-        
-        if (response.ok) {
-          fetchClientes() // Recargar la lista
-          alert('Cliente eliminado correctamente')
-        } else {
-          alert('Error al eliminar el cliente')
+  if (window.confirm(`¿Estás seguro de eliminar al cliente ${cliente.nombre}?`)) {
+    try {
+      const response = await fetch(`http://localhost:8085/api/clientes/${cliente.id}/negocio/${negocioId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
-      } catch (error) {
-        console.error('Error:', error)
-        alert('Error al eliminar el cliente')
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        fetchClientes() // Recargar la lista
+        alert(result.message || 'Cliente eliminado correctamente')
+      } else {
+        const errorData = await response.json()
+        alert(errorData.message || 'Error al eliminar el cliente')
       }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error al eliminar el cliente')
     }
   }
+}
 
   const exportToPDF = () => {
     alert('Exportando a PDF...')
@@ -267,10 +279,17 @@ const Clientes = () => {
           </div>
         </main>
 
-        {/* Modal para crear/editar/ver cliente */}
-        <ClienteModal 
-          show={showModal}
-          onClose={() => setShowModal(false)}
+        {/* Modal para visualizar cliente */}
+        <ClienteViewModal 
+          show={showViewModal}
+          onClose={() => setShowViewModal(false)}
+          cliente={selectedCliente}
+        />
+
+        {/* Modal para crear/editar cliente */}
+        <ClienteEditModal 
+          show={showEditModal}
+          onClose={() => setShowEditModal(false)}
           cliente={selectedCliente}
           onSave={fetchClientes}
         />
