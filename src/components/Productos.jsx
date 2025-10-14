@@ -2,26 +2,58 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import Sidebar from './Sidebar'
-import CategoriaEditModal from '../modal/CategoriaEditModal'
-import CategoriaViewModal from '../modal/CategoriaViewModal'
-import '../styles/Categorias.css'
+import ProductoEditModal from '../modal/ProductoEditModal'
+import ProductoViewModal from '../modal/ProductoViewModal'
+import '../styles/Productos.css'
 
-const Categorias = () => {
+const Productos = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [productos, setProductos] = useState([])
   const [categorias, setCategorias] = useState([])
   const [loading, setLoading] = useState(true)
   const [showViewModal, setShowViewModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
-  const [selectedCategoria, setSelectedCategoria] = useState(null)
+  const [selectedProducto, setSelectedProducto] = useState(null)
   const { user, negocioId } = useAuth()
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
-  const fetchCategorias = async () => {
+  const fetchProductos = async () => {
+    if (!negocioId) {
+      console.error('negocioId es null o undefined')
+      setLoading(false)
+      return
+    }
+
     try {
       setLoading(true)
+      const response = await fetch(`http://localhost:8085/api/productos/negocio/${negocioId}?page=0&size=100`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setProductos(data.content || [])
+      } else {
+        console.error('Error al cargar productos')
+        alert('Error al cargar la lista de productos')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      alert('Error de conexión al cargar productos')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchCategorias = async () => {
+    if (!negocioId) return
+
+    try {
       const response = await fetch(`http://localhost:8085/api/categorias/negocio/${negocioId}?page=0&size=100`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -31,41 +63,51 @@ const Categorias = () => {
       if (response.ok) {
         const data = await response.json()
         setCategorias(data.content || [])
-      } else {
-        console.error('Error al cargar categorías')
-        alert('Error al cargar la lista de categorías')
       }
     } catch (error) {
-      console.error('Error:', error)
-      alert('Error de conexión al cargar categorías')
-    } finally {
-      setLoading(false)
+      console.error('Error al cargar categorías:', error)
     }
   }
 
   useEffect(() => {
-    fetchCategorias()
+    if (negocioId) {
+      fetchProductos()
+      fetchCategorias()
+    }
   }, [negocioId])
 
-  const handleNuevaCategoria = () => {
-    setSelectedCategoria(null)
+  const handleNuevoProducto = () => {
+    if (!negocioId) {
+      alert('Error: No se pudo identificar el negocio. Por favor, inicie sesión nuevamente.')
+      return
+    }
+    setSelectedProducto(null)
     setShowEditModal(true)
   }
 
-  const handleVerCategoria = (categoria) => {
-    setSelectedCategoria(categoria)
+  const handleVerProducto = (producto) => {
+    setSelectedProducto(producto)
     setShowViewModal(true)
   }
 
-  const handleEditarCategoria = (categoria) => {
-    setSelectedCategoria(categoria)
+  const handleEditarProducto = (producto) => {
+    if (!negocioId) {
+      alert('Error: No se pudo identificar el negocio. Por favor, inicie sesión nuevamente.')
+      return
+    }
+    setSelectedProducto(producto)
     setShowEditModal(true)
   }
 
-  const handleEliminarCategoria = async (categoria) => {
-    if (window.confirm(`¿Estás seguro de eliminar la categoría "${categoria.nombre}"?`)) {
+  const handleEliminarProducto = async (producto) => {
+    if (!negocioId) {
+      alert('Error: No se pudo identificar el negocio. Por favor, inicie sesión nuevamente.')
+      return
+    }
+
+    if (window.confirm(`¿Estás seguro de eliminar el producto "${producto.nombre}"?`)) {
       try {
-        const response = await fetch(`http://localhost:8085/api/categorias/${categoria.id}/negocio/${negocioId}`, {
+        const response = await fetch(`http://localhost:8085/api/productos/${producto.id}/negocio/${negocioId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -73,27 +115,45 @@ const Categorias = () => {
         })
         
         if (response.ok) {
-          fetchCategorias()
-          alert('Categoría eliminada correctamente')
+          fetchProductos()
+          alert('Producto eliminado correctamente')
         } else {
           const errorData = await response.json()
-          alert(errorData.message || 'Error al eliminar la categoría')
+          alert(errorData.message || 'Error al eliminar el producto')
         }
       } catch (error) {
         console.error('Error:', error)
-        alert('Error al eliminar la categoría')
+        alert('Error al eliminar el producto')
       }
     }
   }
 
   const exportToPDF = () => {
     alert('Exportando a PDF...')
-    // Implementar lógica de exportación a PDF
   }
 
   const exportToExcel = () => {
     alert('Exportando a Excel...')
-    // Implementar lógica de exportación a Excel
+  }
+
+  const calcularMargen = (precio, costo) => {
+    return ((precio - costo) / costo * 100).toFixed(2)
+  }
+
+  if (!negocioId) {
+    return (
+      <div className="dashboard-container">
+        <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+        <div className="dashboard-content">
+          <div className="container-fluid mt-5">
+            <div className="alert alert-danger text-center">
+              <h4>Error de Configuración</h4>
+              <p>No se pudo identificar el negocio. Por favor, cierre sesión y vuelva a iniciar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -112,11 +172,15 @@ const Categorias = () => {
                   <i className="fas fa-bars"></i>
                 </button>
                 <h1 className="dashboard-title mb-0">
-                  Gestión de Categorías
+                  Gestión de Productos
                 </h1>
               </div>
               
               <div className="d-flex align-items-center">
+                <div className="user-badge me-3">
+                  <i className="fas fa-store me-2"></i>
+                  Negocio: {negocioId}
+                </div>
                 <button className="header-btn me-3">
                   <i className="fas fa-bell"></i>
                 </button>
@@ -133,21 +197,21 @@ const Categorias = () => {
         <main className="dashboard-main">
           <div className="container-fluid">
             {/* Header de acciones */}
-            <div className="categorias-header">
+            <div className="productos-header">
               <div className="row align-items-center">
                 <div className="col-md-6">
-                  <h2>Gestión de Categorías</h2>
-                  <p className="text-muted mb-0">Organiza tus productos por categorías</p>
+                  <h2>Gestión de Productos</h2>
+                  <p className="text-muted mb-0">Administra el inventario de productos</p>
                 </div>
                 <div className="col-md-6 text-end">
                   <div className="btn-group me-2">
                     <button
                       type="button"
                       className="btn btn-success"
-                      onClick={handleNuevaCategoria}
+                      onClick={handleNuevoProducto}
                     >
                       <i className="fas fa-plus me-2"></i>
-                      Nueva Categoría
+                      Nuevo Producto
                     </button>
                   </div>
                   
@@ -180,7 +244,7 @@ const Categorias = () => {
               </div>
             </div>
 
-            {/* Tabla de categorías */}
+            {/* Tabla de productos */}
             <div className="card mt-4">
               <div className="card-body">
                 {loading ? (
@@ -188,7 +252,7 @@ const Categorias = () => {
                     <div className="spinner-border text-primary" role="status">
                       <span className="visually-hidden">Cargando...</span>
                     </div>
-                    <p className="mt-2">Cargando categorías...</p>
+                    <p className="mt-2">Cargando productos...</p>
                   </div>
                 ) : (
                   <div className="table-responsive">
@@ -197,67 +261,92 @@ const Categorias = () => {
                         <tr>
                           <th>ID</th>
                           <th>Nombre</th>
-                          <th>Descripción</th>
-                          <th>Productos</th>
+                          <th>Precio</th>
+                          <th>Costo</th>
+                          <th>Margen</th>
+                          <th>Categorías</th>
                           <th>Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {categorias.length === 0 ? (
+                        {productos.length === 0 ? (
                           <tr>
-                            <td colSpan="5" className="text-center py-4">
-                              <i className="fas fa-tags fa-2x text-muted mb-3"></i>
-                              <p>No hay categorías registradas</p>
+                            <td colSpan="7" className="text-center py-4">
+                              <i className="fas fa-box-open fa-2x text-muted mb-3"></i>
+                              <p>No hay productos registrados</p>
                               <button 
                                 className="btn btn-primary"
-                                onClick={handleNuevaCategoria}
+                                onClick={handleNuevoProducto}
                               >
                                 <i className="fas fa-plus me-2"></i>
-                                Crear Primera Categoría
+                                Agregar Primer Producto
                               </button>
                             </td>
                           </tr>
                         ) : (
-                          categorias.map((categoria) => (
-                            <tr key={categoria.id}>
-                              <td>{categoria.id}</td>
+                          productos.map((producto) => (
+                            <tr key={producto.id}>
+                              <td>{producto.id}</td>
                               <td>
                                 <div className="d-flex align-items-center">
-                                  <div className="categoria-icon me-3">
-                                    <i className="fas fa-tag"></i>
+                                  <div className="producto-icon me-3">
+                                    <i className="fas fa-box"></i>
                                   </div>
-                                  <strong>{categoria.nombre}</strong>
+                                  <strong>{producto.nombre}</strong>
                                 </div>
                               </td>
                               <td>
-                                {categoria.descripcion || (
-                                  <span className="text-muted">Sin descripción</span>
-                                )}
+                                <span className="fw-bold text-success">
+                                  ${producto.precioUnitario.toFixed(2)}
+                                </span>
                               </td>
                               <td>
-                                <span className="badge bg-primary">
-                                  {categoria.productos?.length || 0} productos
+                                <span className="text-muted">
+                                  ${producto.costo.toFixed(2)}
                                 </span>
+                              </td>
+                              <td>
+                                <span className={`badge ${calcularMargen(producto.precioUnitario, producto.costo) > 50 ? 'bg-success' : 'bg-warning'}`}>
+                                  {calcularMargen(producto.precioUnitario, producto.costo)}%
+                                </span>
+                              </td>
+                              <td>
+                                {producto.categorias && producto.categorias.length > 0 ? (
+                                  <div className="d-flex flex-wrap gap-1">
+                                    {producto.categorias.slice(0, 2).map((categoria) => (
+                                      <span key={categoria.id} className="badge bg-info">
+                                        {categoria.nombre}
+                                      </span>
+                                    ))}
+                                    {producto.categorias.length > 2 && (
+                                      <span className="badge bg-secondary">
+                                        +{producto.categorias.length - 2}
+                                      </span>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <span className="text-muted">Sin categorías</span>
+                                )}
                               </td>
                               <td>
                                 <div className="btn-group" role="group">
                                   <button
                                     className="btn btn-sm btn-outline-info"
-                                    onClick={() => handleVerCategoria(categoria)}
+                                    onClick={() => handleVerProducto(producto)}
                                     title="Ver detalles"
                                   >
                                     <i className="fas fa-eye"></i>
                                   </button>
                                   <button
                                     className="btn btn-sm btn-outline-warning"
-                                    onClick={() => handleEditarCategoria(categoria)}
+                                    onClick={() => handleEditarProducto(producto)}
                                     title="Editar"
                                   >
                                     <i className="fas fa-edit"></i>
                                   </button>
                                   <button
                                     className="btn btn-sm btn-outline-danger"
-                                    onClick={() => handleEliminarCategoria(categoria)}
+                                    onClick={() => handleEliminarProducto(producto)}
                                     title="Eliminar"
                                   >
                                     <i className="fas fa-trash"></i>
@@ -276,23 +365,24 @@ const Categorias = () => {
           </div>
         </main>
 
-        {/* Modal para visualizar categoría */}
-        <CategoriaViewModal 
+        {/* Modal para visualizar producto */}
+        <ProductoViewModal 
           show={showViewModal}
           onClose={() => setShowViewModal(false)}
-          categoria={selectedCategoria}
+          producto={selectedProducto}
         />
 
-        {/* Modal para crear/editar categoría */}
-        <CategoriaEditModal 
+        {/* Modal para crear/editar producto */}
+        <ProductoEditModal 
           show={showEditModal}
           onClose={() => setShowEditModal(false)}
-          categoria={selectedCategoria}
-          onSave={fetchCategorias}
+          producto={selectedProducto}
+          categorias={categorias}
+          onSave={fetchProductos}
         />
       </div>
     </div>
   )
 }
 
-export default Categorias
+export default Productos

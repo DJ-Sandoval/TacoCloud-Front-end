@@ -4,6 +4,7 @@ import LoginPage from './components/LoginPage'
 import Dashboard from './components/Dashboard'
 import Clientes from './components/Clientes'
 import Categorias from './components/Categorias'
+import Productos from './components/Productos'
 import './App.css'
 
 function App() {
@@ -35,10 +36,17 @@ function App() {
           element={isAuthenticated ? <Clientes /> : <Navigate to="/login" />} 
         />
         <Route 
+          path="/categorias" 
+          element={isAuthenticated ? <Categorias /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/productos" 
+          element={isAuthenticated ? <Productos /> : <Navigate to="/login" />} 
+        />
+        <Route 
           path="/" 
           element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
         />
-        <Route path="/categorias" element={<Categorias />} />
       </Routes>
     </Router>
   )

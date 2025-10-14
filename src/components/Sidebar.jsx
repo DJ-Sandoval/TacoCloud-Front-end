@@ -86,7 +86,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             Hola, {user?.username}
           </div>
         </div>
-
         {/* Navigation Menu */}
         <nav className="sidebar-nav">
           <ul className="sidebar-menu">
