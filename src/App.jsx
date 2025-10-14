@@ -3,6 +3,7 @@ import { useAuth } from './context/AuthContext'
 import LoginPage from './components/LoginPage'
 import Dashboard from './components/Dashboard'
 import Clientes from './components/Clientes'
+import Categorias from './components/Categorias'
 import './App.css'
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           path="/" 
           element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
         />
+        <Route path="/categorias" element={<Categorias />} />
       </Routes>
     </Router>
   )
