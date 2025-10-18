@@ -5,6 +5,7 @@ import '../styles/Sidebar.css';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
   const { user, logout, negocioId } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,6 +29,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     }
   };
 
+  const handleAboutClick = () => {
+    setShowAboutModal(true);
+    if (isOpen) {
+      toggleSidebar();
+    }
+  };
+
   const menuItems = [
     { name: 'Cajas', icon: 'fas fa-box', path: '/cajas' },
     { name: 'Clientes', icon: 'fas fa-users', path: '/clientes' },
@@ -43,10 +51,19 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { name: 'Inventario', icon: 'fas fa-warehouse', path: '/inventario' },
     { name: 'Reportes', icon: 'fas fa-file-alt', path: '/reportes' },
     { name: 'Configuraciones', icon: 'fas fa-cog', path: '/configuraciones' },
+    { name: 'Acerca de', icon: 'fas fa-info-circle', path: '#', action: handleAboutClick },
   ];
 
   const isActive = (path) => {
     return location.pathname === path;
+  };
+
+  const handleMenuItemClick = (item) => {
+    if (item.action) {
+      item.action();
+    } else {
+      handleNavigation(item.path);
+    }
   };
 
   return (
@@ -86,6 +103,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             Hola, {user?.username}
           </div>
         </div>
+
         {/* Navigation Menu */}
         <nav className="sidebar-nav">
           <ul className="sidebar-menu">
@@ -93,7 +111,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               <li key={index} className="sidebar-menu-item">
                 <button
                   className={`sidebar-menu-link ${isActive(item.path) ? 'active' : ''}`}
-                  onClick={() => handleNavigation(item.path)}
+                  onClick={() => handleMenuItemClick(item)}
                 >
                   <i className={item.icon}></i>
                   <span>{item.name}</span>
@@ -144,6 +162,64 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </div>
         </div>
       </div>
+
+      {/* Modal Acerca de */}
+      {showAboutModal && (
+        <div className="modal fade show" style={{display: 'block', backgroundColor: 'rgba(0,0,0,0.5)'}}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header" style={{backgroundColor: '#1a3c34', color: 'white'}}>
+                <h5 className="modal-title">
+                  <i className="fas fa-info-circle me-2"></i>
+                  Acerca de
+                </h5>
+                <button 
+                  type="button" 
+                  className="btn-close btn-close-white"
+                  onClick={() => setShowAboutModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body text-center">
+                <div className="mb-4">
+                  <i className="fas fa-cloud-meatball" style={{fontSize: '3rem', color: '#1a3c34'}}></i>
+                </div>
+                <h4 className="mb-3" style={{color: '#1a3c34'}}>TaqueSys Cloud v.25</h4>
+                <p className="lead mb-4">Sistema de gestión para taquerías</p>
+                
+                <div className="border-top pt-3">
+                  <h6 className="mb-3">Desarrollado por:</h6>
+                  <div className="row">
+                    <div className="col-6">
+                      <div className="p-3 border rounded">
+                        <i className="fas fa-user-tie mb-2" style={{fontSize: '1.5rem', color: '#f4c430'}}></i>
+                        <p className="mb-0 fw-bold">Ing. Armando Sandoval</p>
+                        <small className="text-muted">Desarrollador</small>
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="p-3 border rounded">
+                        <i className="fas fa-user-graduate mb-2" style={{fontSize: '1.5rem', color: '#f4c430'}}></i>
+                        <p className="mb-0 fw-bold">Ing. Valeria Sofia</p>
+                        <small className="text-muted">Desarrolladora</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn" 
+                  style={{backgroundColor: '#1a3c34', color: 'white'}}
+                  onClick={() => setShowAboutModal(false)}
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
