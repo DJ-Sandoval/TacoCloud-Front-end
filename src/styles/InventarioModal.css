@@ -1,0 +1,21 @@
+.ajustar-stock-form .bg-light {
+  background-color: #f8f9fa !important;
+  border: 1px solid #dee2e6;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #1a3c34;
+  margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #1a3c34;
+  box-shadow: 0 0 0 0.2rem rgba(26, 60, 52, 0.25);
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+  padding: 1rem;
+}

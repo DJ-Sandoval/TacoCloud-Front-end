@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard'
 import Clientes from './components/Clientes'
 import Categorias from './components/Categorias'
 import Productos from './components/Productos'
+import Inventario from './components/Inventario'
 import './App.css'
 
 function App() {
@@ -47,6 +48,10 @@ function App() {
           path="/" 
           element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
         />
+        <Route 
+  path="/inventario" 
+  element={isAuthenticated ? <Inventario /> : <Navigate to="/login" />} 
+/>
       </Routes>
     </Router>
   )

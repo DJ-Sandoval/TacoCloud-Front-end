@@ -68,10 +68,26 @@
   margin-bottom: 1rem;
 }
 
-.sidebar-brand i {
-  font-size: 2rem;
-  color: #f4c430;
+/* Actualiza esta parte para el nuevo diseño de iconos */
+.sidebar-brand-icon-container {
+  position: relative;
   margin-right: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-brand-icon-cloud {
+  font-size: 1.8rem;
+  color: white;
+}
+
+.sidebar-brand-icon-taco {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 0.9rem;
+  color: #f4c430;
 }
 
 .sidebar-brand span {
@@ -147,6 +163,7 @@
   display: flex;
   align-items: center;
   font-size: 0.95rem;
+  position: relative;
 }
 
 .sidebar-menu-link:hover {
@@ -308,5 +325,15 @@
   
   .sidebar-user-section {
     padding: 0.75rem 1.25rem;
+  }
+  
+  .sidebar-brand-icon-cloud {
+    font-size: 1.6rem;
+  }
+  
+  .sidebar-brand-icon-taco {
+    font-size: 0.8rem;
+    top: 7px;
+    left: 9px;
   }
 }

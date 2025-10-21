@@ -1,12 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import { useAuth } from '../context/AuthContext'
+import { useApi } from '../hooks/useApi'
 import '../styles/Dashboard.css'
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [totalClientes, setTotalClientes] = useState(0)
+  const [loading, setLoading] = useState(true)
   const { user, negocioId } = useAuth()
+  const { fetchTotalClientes } = useApi() // Cambia el nombre aquí si es necesario
   const navigate = useNavigate()
 
   const toggleSidebar = () => {
@@ -16,6 +20,30 @@ const Dashboard = () => {
   const handleNavigation = (path) => {
     navigate(path)
   }
+
+  // Función para cargar el total de clientes - CAMBIA EL NOMBRE DE ESTA FUNCIÓN
+  const loadTotalClientes = async () => {
+    try {
+      setLoading(true)
+      const response = await fetchTotalClientes() // Esta viene del useApi
+      if (response.ok) {
+        const data = await response.json()
+        setTotalClientes(data.totalClientes || 0)
+      } else {
+        console.error('Error al cargar total de clientes')
+        setTotalClientes(0)
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      setTotalClientes(0)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadTotalClientes() // Cambia el nombre aquí también
+  }, [negocioId])
 
   return (
     <div className="dashboard-container">
@@ -65,7 +93,15 @@ const Dashboard = () => {
                     <i className="fas fa-users"></i>
                   </div>
                   <div className="stat-info">
-                    <h3>0</h3>
+                    <h3>
+                      {loading ? (
+                        <div className="spinner-border spinner-border-sm" role="status">
+                          <span className="visually-hidden">Cargando...</span>
+                        </div>
+                      ) : (
+                        totalClientes.toLocaleString()
+                      )}
+                    </h3>
                     <p>Clientes</p>
                   </div>
                 </div>

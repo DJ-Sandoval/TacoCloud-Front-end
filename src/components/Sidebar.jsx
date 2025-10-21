@@ -37,6 +37,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   };
 
   const menuItems = [
+    { name: 'Dashboard', icon: 'fas fa-home', path: '/' }, // Agregar esta línea
     { name: 'Cajas', icon: 'fas fa-box', path: '/cajas' },
     { name: 'Clientes', icon: 'fas fa-users', path: '/clientes' },
     { name: 'Categorías', icon: 'fas fa-tags', path: '/categorias' },
@@ -80,17 +81,29 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         className={`sidebar ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`}
       >
         {/* Brand Section */}
-        <div className="sidebar-brand">
-          <i className="fas fa-cloud-meatball"></i>
-          <span>TacoCloud</span>
-          <button
-            className="sidebar-close-btn d-md-none"
-            onClick={toggleSidebar}
-            aria-label="Close sidebar"
-          >
-            <i className="fas fa-times"></i>
-          </button>
-        </div>
+<div className="sidebar-brand">
+  <div 
+    className="sidebar-brand-icon-container"
+    onClick={() => handleNavigation('/dashboard')}
+    style={{cursor: 'pointer'}}
+  >
+    <i className="fas fa-cloud sidebar-brand-icon-cloud"></i>
+    <i className="fas fa-utensils sidebar-brand-icon-taco"></i>
+  </div>
+  <span 
+    onClick={() => handleNavigation('/dashboard')}
+    style={{cursor: 'pointer'}}
+  >
+    🌮TaqueSys Cloud
+  </span>
+  <button
+    className="sidebar-close-btn d-md-none"
+    onClick={toggleSidebar}
+    aria-label="Close sidebar"
+  >
+    <i className="fas fa-times"></i>
+  </button>
+</div>
 
         {/* Negocio Info */}
         <div className="negocio-info">
