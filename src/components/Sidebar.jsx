@@ -37,23 +37,25 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   };
 
   const menuItems = [
-    { name: 'Dashboard', icon: 'fas fa-home', path: '/' }, // Agregar esta línea
-    { name: 'Cajas', icon: 'fas fa-box', path: '/cajas' },
-    { name: 'Clientes', icon: 'fas fa-users', path: '/clientes' },
-    { name: 'Categorías', icon: 'fas fa-tags', path: '/categorias' },
-    { name: 'Productos', icon: 'fas fa-box-open', path: '/productos' },
-    { name: 'Compras', icon: 'fas fa-shopping-cart', path: '/compras' },
-    { name: 'Pedidos', icon: 'fas fa-receipt', path: '/pedidos' },
-    { name: 'Gastos', icon: 'fas fa-money-bill-wave', path: '/gastos' },
-    { name: 'Nueva Venta', icon: 'fas fa-cart-plus', path: '/nueva-venta' },
-    { name: 'Historial Pedidos', icon: 'fas fa-history', path: '/historial-pedidos' },
-    { name: 'Historial Ventas', icon: 'fas fa-chart-line', path: '/historial-ventas' },
-    { name: 'Negocio', icon: 'fas fa-store', path: '/negocio' },
-    { name: 'Inventario', icon: 'fas fa-warehouse', path: '/inventario' },
-    { name: 'Reportes', icon: 'fas fa-file-alt', path: '/reportes' },
-    { name: 'Configuraciones', icon: 'fas fa-cog', path: '/configuraciones' },
-    { name: 'Acerca de', icon: 'fas fa-info-circle', path: '#', action: handleAboutClick },
-  ];
+    { name: '🏠 Dashboard', icon: 'fas fa-home', path: '/' },
+    { name: '📦 Cajas', icon: 'fas fa-box', path: '/cajas' },
+    { name: '👥 Clientes', icon: 'fas fa-users', path: '/clientes' },
+    { name: '🚚 Proveedores', icon: 'fas fa-truck', path: '/proveedores' },
+    { name: '🏷️ Categorías', icon: 'fas fa-tags', path: '/categorias' },
+    { name: '📦 Productos', icon: 'fas fa-box-open', path: '/productos' },
+    { name: '📏 Medidas', icon: 'fas fa-ruler-combined', path: '/medidas' },
+    { name: '🛒 Compras', icon: 'fas fa-shopping-cart', path: '/compras' },
+    { name: '🧾 Pedidos', icon: 'fas fa-receipt', path: '/pedidos' },
+    { name: '💰 Gastos', icon: 'fas fa-money-bill-wave', path: '/gastos' },
+    { name: '🛍️ Nueva Venta', icon: 'fas fa-cart-plus', path: '/nueva-venta' },
+    { name: '📋 Historial Pedidos', icon: 'fas fa-history', path: '/historial-pedidos' },
+    { name: '📊 Historial Ventas', icon: 'fas fa-chart-line', path: '/historial-ventas' },
+    { name: '🏪 Negocio', icon: 'fas fa-store', path: '/negocio' },
+    { name: '🏭 Inventario', icon: 'fas fa-warehouse', path: '/inventario' },
+    { name: '📈 Reportes', icon: 'fas fa-file-alt', path: '/reportes' },
+    { name: '⚙️ Configuraciones', icon: 'fas fa-cog', path: '/configuraciones' },
+    { name: 'ℹ️ Acerca de', icon: 'fas fa-info-circle', path: '#', action: handleAboutClick },
+];
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -212,7 +214,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     <div className="col-6">
                       <div className="p-3 border rounded">
                         <i className="fas fa-user-graduate mb-2" style={{fontSize: '1.5rem', color: '#f4c430'}}></i>
-                        <p className="mb-0 fw-bold">Ing. Valeria Sofia</p>
+                        <p className="mb-0 fw-bold">Ing. Sofia Chavez</p>
                         <small className="text-muted">Desarrolladora</small>
                       </div>
                     </div>

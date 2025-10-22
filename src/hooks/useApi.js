@@ -86,6 +86,11 @@ const fetchTotalClientes = async () => {
   return authenticatedFetch(url);
 };
 
+const fetchBajoStock = async (page = 0, size = 10) => {
+  const url = `http://localhost:8085/api/inventario/negocio/${negocioId}/bajo-stock?page=${page}&size=${size}`;
+  return authenticatedFetch(url);
+};
+
 
   // Función genérica para otros endpoints
   const fetchFromNegocio = async (endpoint, options = {}) => {
@@ -99,6 +104,7 @@ const fetchTotalClientes = async () => {
     fetchProductos,
     fetchFromNegocio,
     fetchClientes,
-    fetchTotalClientes
+    fetchTotalClientes,
+    fetchBajoStock
   };
 };
